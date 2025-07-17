@@ -22,7 +22,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 // ✅ Handle preflight OPTIONS requests for any route
-app.options('*', cors(corsOptions));
+app.options('/:any(*)', cors(corsOptions));
 
 app.use(express.json());
 
