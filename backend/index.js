@@ -6,8 +6,19 @@ const {PORT} = require("./config");
 
 const app = express();
 
-app.use(cors());
-app.options("/api/v1", cors());
+const allowedOrigins = ['https://pay-u-eta.vercel.app'];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+}));
+app.options('/:any(*)', cors()); // ✅ Best if using CORS widely
 app.use(express.json());
 
 app.use("/api/v1", rootRouter);
