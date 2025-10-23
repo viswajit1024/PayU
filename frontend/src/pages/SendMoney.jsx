@@ -1,4 +1,4 @@
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import axios from "axios";
 import { useState } from 'react';
 
@@ -9,6 +9,7 @@ export const SendMoney = () => {
     const id = searchParams.get("id");
     const name = searchParams.get("name");
     const [amount, setAmount] = useState(0);
+    const navigate = useNavigate();
 
     return <div className="flex justify-center h-screen bg-gray-100">
         <div className="h-full flex flex-col justify-center">
@@ -44,14 +45,21 @@ export const SendMoney = () => {
                     />
                     </div>
                     <button onClick={() => {
-                        axios.post(`${BACKEND_URL}/api/v1/account/transfer`, {
-                            to: id,
-                            amount
-                        }, {
-                            headers: {
-                                Authorization: "Bearer " + localStorage.getItem("token")
-                            }
-                        })
+                        try{
+                            axios.post(`${BACKEND_URL}/api/v1/account/transfer`, {
+                                to: id,
+                                amount
+                            }, {
+                                headers: {
+                                    Authorization: "Bearer " + localStorage.getItem("token")
+                                }
+                            })
+                            alert("Transfer successful!")
+                            navigate("/dashboard")
+                        }catch(error){
+                            console.error(error)
+                            alert(error.response?.data?.message || "Transfer failed. Please try again.")
+                        }
                     }} className="justify-center rounded-md text-sm font-medium ring-offset-background transition-colors h-10 px-4 py-2 w-full bg-green-500 text-white">
                         Initiate Transfer
                     </button>
